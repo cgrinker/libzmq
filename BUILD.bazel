@@ -1,0 +1,82 @@
+
+
+
+cc_library(
+  name = "zmq",
+  visibility = ["//visibility:public"],
+  hdrs = glob([
+    "include/**/*.h*",
+    "src/**/*.h*",
+    "builds/bazel/platform.hpp"
+  ], exclude=[
+   # "src/**/*ws_*"
+  ]) + select({
+    "@bazel_tools//src/conditions:windows": [
+      "builds/bazel/platform_windows.hpp"
+    ],
+    "@bazel_tools//src/conditions:darwin_x86_64": [
+      "builds/bazel/platform_darwin_x86_64.hpp"
+    ],
+     "//conditions:default": [
+       "builds/bazel/platform_linux.hpp"
+     ],
+  }),
+  includes=[
+    "include",
+    "builds/bazel",
+    "src",
+    ],
+  defines = [
+    "ZMQ_HAVE_WS",
+    '_REENTRANT',
+    '_THREAD_SAFE',
+    'ZMQ_CUSTOM_PLATFORM_HPP',
+    'ZMQ_GYP_BUILD'
+  ] + select({
+    "@bazel_tools//src/conditions:windows": [
+      'ZMQ_HAVE_WINDOWS',
+        'ZMQ_STATIC',
+        'FD_SETSIZE=16384',
+        '_CRT_SECURE_NO_WARNINGS',
+        '_WINSOCK_DEPRECATED_NO_WARNINGS'
+    ],
+    "@bazel_tools//src/conditions:darwin_x86_64": [
+      'ZMQ_HAVE_OSX',
+      "HAVE_STRNLEN",
+      "ZMQ_HAVE_UIO"
+    ],
+     "//conditions:default": [
+       'ZMQ_HAVE_LINUX'
+     ],
+  }),
+  copts = [] + select({
+    "@bazel_tools//src/conditions:windows": [
+      '-Wl,ws2_32',
+      '-Wl,advapi32',
+      '-Wl,iphlpapi'
+    ],
+    "@bazel_tools//src/conditions:darwin_x86_64": [
+      
+    ],
+     "//conditions:default": [
+     ],
+  }),
+  linkopts = [] + select({
+    "@bazel_tools//src/conditions:windows": [
+      '-Wl,ws2_32',
+      '-Wl,advapi32',
+      '-Wl,iphlpapi'
+    ],
+    "@bazel_tools//src/conditions:darwin_x86_64": [
+      
+    ],
+     "//conditions:default": [
+       '-lpthread'
+     ],
+  }),
+  srcs = glob([
+    "src/**/*.c*",
+  ], exclude=[
+    #"src/**/*ws_*"
+  ])
+)

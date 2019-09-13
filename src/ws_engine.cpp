@@ -34,7 +34,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <sechash.h>
 #define SHA_DIGEST_LENGTH 20
 #else
-#include "../external/sha1/sha1.h"
+#include "sha1.h"
 #endif
 
 #if !defined ZMQ_HAVE_WINDOWS
