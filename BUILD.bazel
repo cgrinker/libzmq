@@ -31,14 +31,13 @@ cc_library(
     '_REENTRANT',
     '_THREAD_SAFE',
     'ZMQ_CUSTOM_PLATFORM_HPP',
-    'ZMQ_GYP_BUILD'
   ] + select({
     "@bazel_tools//src/conditions:windows": [
       'ZMQ_HAVE_WINDOWS',
-        'ZMQ_STATIC',
-        'FD_SETSIZE=16384',
-        '_CRT_SECURE_NO_WARNINGS',
-        '_WINSOCK_DEPRECATED_NO_WARNINGS'
+      'ZMQ_STATIC',
+      'FD_SETSIZE=16384',
+      '_CRT_SECURE_NO_WARNINGS',
+      '_WINSOCK_DEPRECATED_NO_WARNINGS'
     ],
     "@bazel_tools//src/conditions:darwin_x86_64": [
       'ZMQ_HAVE_OSX',
@@ -51,9 +50,6 @@ cc_library(
   }),
   copts = [] + select({
     "@bazel_tools//src/conditions:windows": [
-      '-Wl,ws2_32',
-      '-Wl,advapi32',
-      '-Wl,iphlpapi'
     ],
     "@bazel_tools//src/conditions:darwin_x86_64": [
       
@@ -63,9 +59,9 @@ cc_library(
   }),
   linkopts = [] + select({
     "@bazel_tools//src/conditions:windows": [
-      '-Wl,ws2_32',
-      '-Wl,advapi32',
-      '-Wl,iphlpapi'
+      '/DEFAULTLIB:ws2_32.lib',
+      '/DEFAULTLIB:advapi32.lib',
+      '/DEFAULTLIB:iphlpapi.lib'
     ],
     "@bazel_tools//src/conditions:darwin_x86_64": [
       
