@@ -1,6 +1,18 @@
 
 
+config_setting(
+    name = "ios_armv7",
+    values = {
+        "ios_multi_cpus": "armv7",
+    },
+)
 
+config_setting(
+    name = "ios_arm64",
+    values = {
+        "ios_multi_cpus": "arm64",
+    },
+)
 cc_library(
   name = "zmq",
   visibility = ["//visibility:public"],
@@ -15,6 +27,9 @@ cc_library(
       "builds/bazel/platform_windows.hpp"
     ],
     "@bazel_tools//src/conditions:darwin_x86_64": [
+      "builds/bazel/platform_darwin_x86_64.hpp"
+    ],
+     ":ios_armv7": [
       "builds/bazel/platform_darwin_x86_64.hpp"
     ],
      "//conditions:default": [
@@ -40,6 +55,11 @@ cc_library(
       '_WINSOCK_DEPRECATED_NO_WARNINGS'
     ],
     "@bazel_tools//src/conditions:darwin_x86_64": [
+      'ZMQ_HAVE_OSX',
+      "HAVE_STRNLEN",
+      "ZMQ_HAVE_UIO"
+    ],
+    ":ios_armv7": [
       'ZMQ_HAVE_OSX',
       "HAVE_STRNLEN",
       "ZMQ_HAVE_UIO"
